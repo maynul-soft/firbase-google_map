@@ -29,78 +29,69 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    getLiveScore();
-  }
 
   List<LiveScoreModel> liveScoreList = [];
-  bool isLoading = false;
+
 
   final FirebaseFirestore db = FirebaseFirestore.instance;
 
-  Future<void> getLiveScore() async {
-    isLoading = true;
-    setState(() {});
-
-    QuerySnapshot snapshot = await db.collection('football').get();
-    for (QueryDocumentSnapshot s in snapshot.docs) {
-      LiveScoreModel liveScoreModel = LiveScoreModel.fromJson(
-        id: s.id,
-        json: s.data() as Map<String, dynamic>,
-      );
-
-      liveScoreList.add(liveScoreModel);
-      print(
-        '${liveScoreList[0].id}'
-        '${liveScoreList[0].team1}'
-        '${'Length: ${liveScoreList.length}'}',
-      );
-    }
-    isLoading = false;
-    setState(() {});
-  }
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Learn Firebase')),
-      body: Visibility(
-        visible: isLoading == false,
-        replacement: Center(child: CircularProgressIndicator()),
-        child: ListView.builder(
-          itemCount: liveScoreList.length,
-          itemBuilder: ((BuildContext context, int index) {
-            LiveScoreModel liveScore = liveScoreList[index];
-            return Card(
-              child: ListTile(
-                title: Text('${liveScore.metchTitle}'),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('${liveScore.team1}'),
-                    Text('${liveScore.team1}'),
-                    liveScore.winnerTeam.isEmpty?
-                    Row(
-                      children: [
-                       Text('Live'),
-                        SizedBox(width: 4,),
-                        CircleAvatar(radius: 5,backgroundColor: Colors.red,)
-                      ],
-                    ):
-                    Text(liveScore.winnerTeam),
-                  ],
+      body: StreamBuilder(
+        stream: db.collection('football').snapshots(),
+        builder: (context, snapshot) {
+          if(snapshot.connectionState == ConnectionState.waiting){
+            return const Center(child: CircularProgressIndicator(),);
+          }
+          if(snapshot.hasError){
+            return Center(child: Text(snapshot.error.toString()),);
+          }
+          if(snapshot.hasData == false){
+            return SizedBox();
+          }
+
+          liveScoreList.clear();
+
+          for(QueryDocumentSnapshot s in snapshot.data!.docs){
+            LiveScoreModel liveScoreModel = LiveScoreModel.fromJson(id: s.id, json: s.data() as Map<String, dynamic>);
+          liveScoreList.add(liveScoreModel);
+          }
+          return ListView.builder(
+            itemCount: liveScoreList.length,
+            itemBuilder: ((BuildContext context, int index) {
+              LiveScoreModel liveScore = liveScoreList[index];
+              return Card(
+                child: ListTile(
+                  title: Text('${liveScore.metchTitle}'),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Team 1: ${liveScore.team1}'),
+                      Text('Team 2 ${liveScore.team2}'),
+                      liveScore.winnerTeam.isEmpty || liveScore.isRunning?
+                      Row(
+                        children: [
+                         Text('Live'),
+                          SizedBox(width: 4,),
+                          CircleAvatar(radius: 5,backgroundColor: Colors.red,)
+                        ],
+                      ):
+                      Text('Winner: ${liveScore.winnerTeam}'),
+                    ],
+                  ),
+                  trailing: Text(
+                    '${liveScore.team1Score}:${liveScore.team2Score}',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
                 ),
-                trailing: Text(
-                  '${liveScore.team1Score}:${liveScore.team2Score}',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                leading: CircleAvatar(radius: 8, backgroundColor: Colors.blue),
-              ),
-            );
-          }),
-        ),
+              );
+            }),
+          );
+        }
       ),
     );
   }
