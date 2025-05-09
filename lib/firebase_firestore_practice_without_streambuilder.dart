@@ -52,7 +52,7 @@ class _FirebaseFireStorePracticeWithoutStreambuilderState
 
 
   Future<void> addData() async {
-    final addMatch = db.collection('football');
+    final addMatch = db.collection('cricket');
     Map<String, dynamic> newMatch = {
       'isRunning': false,
       'metch_title': 'GER vs NED',
@@ -111,6 +111,7 @@ class _FirebaseFireStorePracticeWithoutStreambuilderState
                     children: [
                       Text('Team1 : ${matchInformation.team1}'),
                       Text('Team2 : ${matchInformation.team2}'),
+                      Text('title : ${matchInformation.id}'),
                       matchInformation.winnerTeam.isEmpty
                           ? Row(
                             mainAxisAlignment: MainAxisAlignment.start,
