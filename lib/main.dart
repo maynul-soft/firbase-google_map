@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:learn_firebase_database/live_score_model.dart';
-
+import 'firebase_firestore_practice_without_streambuilder.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: HomeScreen());
+    return MaterialApp(debugShowCheckedModeBanner: false, home: FirebaseFireStorePracticeWithoutStreambuilder());
   }
 }
 
