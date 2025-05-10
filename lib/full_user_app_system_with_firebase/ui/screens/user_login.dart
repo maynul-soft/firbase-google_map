@@ -22,6 +22,8 @@ class _UserLoginState extends State<UserLogin> {
 
   FirebaseFirestore db = FirebaseFirestore.instance;
 
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,20 +32,30 @@ class _UserLoginState extends State<UserLogin> {
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
+
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SizedBox(height: 200,),
+
               TextFormField(
                 controller: _emailTEController,
-                  decoration: InputDecoration(hintText: 'Email')),
+                decoration: InputDecoration(hintText: 'Email'),
+              ),
               SizedBox(height: 20),
               TextFormField(
-                  controller: _passwordTEController,
-                  decoration: InputDecoration(hintText: 'Password')),
+                controller: _passwordTEController,
+                decoration: InputDecoration(hintText: 'Password'),
+              ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   userLogIn();
                 },
-                child: Text('Login'),
+                child: Visibility(
+                  visible: isLoading == false,
+                  replacement: Center(child: CircularProgressIndicator()),
+                  child: Text('Login'),
+                ),
               ),
               SizedBox(height: 20),
               TextButton(
@@ -65,19 +77,21 @@ class _UserLoginState extends State<UserLogin> {
   }
 
   Future<void> userLogIn() async {
+    isLoading = true;
+    setState(() {});
+
     final userManagement = db.collection(AllKey.collection);
 
     String email = _emailTEController.text;
     String password = _passwordTEController.text;
 
-    final hasUser = await db.collection(AllKey.collection).doc(email).get();
+    final hasUser = await userManagement.doc(email).get();
 
     debugPrint('User email: $email');
     debugPrint('User data: $hasUser');
 
-
     if (!hasUser.exists) {
-      if(!mounted)return;
+      if (!mounted) return;
       showPopUp(context, message: 'No user Found');
     } else {
       final userData = hasUser.data();
@@ -89,20 +103,22 @@ class _UserLoginState extends State<UserLogin> {
 
       await AuthController.setUserInformation(profileInformation);
 
-
       if (email == userDetailsModel.email &&
           password == userDetailsModel.password) {
         if (!mounted) return;
-        debugPrint('ashse');
-        Navigator.push(
+
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (BuildContext context) => HomeScreen()),
+          (route) => false,
         );
       } else {
         if (!mounted) return;
         showPopUp(context, message: 'Wrong user credentials');
       }
     }
+    isLoading = false;
+    setState(() {});
   }
 
   @override

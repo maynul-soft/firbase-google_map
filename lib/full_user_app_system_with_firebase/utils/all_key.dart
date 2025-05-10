@@ -8,4 +8,7 @@ class AllKey{
   static final String email = 'email';
   static final String mobileNumber = 'mobile_no';
   static final String password = 'psw';
+  static final String eventTitle = 'event_title';
+  static final String eventDetails = 'event_details';
+  static final String eventTime = 'event_time';
 }

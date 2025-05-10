@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:learn_firebase_database/full_user_app_system_with_firebase/data/model/user_detail_model.dart';
 import 'package:learn_firebase_database/full_user_app_system_with_firebase/utils/all_key.dart';
 import 'package:logger/logger.dart';
@@ -38,11 +39,23 @@ class AuthController{
     }
   }
 
-  Future<void>clearAllInformation()async{
+  static Future<bool> isLoggedIn () async{
+   SharedPreferences sharedPreferences =await SharedPreferences.getInstance();
+   String? userInformationString = sharedPreferences.getString(saveDataKey);
+   if(userInformationString != null){
+     Logger().i('True');
+     return true;
+
+   }else{
+     Logger().i('false');
+     return false;
+   }
+  }
+
+  static Future<void>clearAllInformation()async{
    SharedPreferences preferences = await SharedPreferences.getInstance();
    preferences.clear();
    email = null;
    name = null;
-
   }
 }

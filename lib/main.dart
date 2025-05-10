@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:learn_firebase_database/full_user_app_system_with_firebase/ui/screens/splash_screen.dart';
 import 'package:learn_firebase_database/live_score_model.dart';
 import 'firebase_options.dart';
+import 'full_user_app_system_with_firebase/ui/controller/auth_controller.dart';
 import 'full_user_app_system_with_firebase/ui/screens/user_login.dart';
 
 void main() async {
@@ -17,7 +19,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: UserLogin());
+    return MaterialApp(
+      theme: ThemeData(
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.blue,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue,
+            foregroundColor: Colors.white,
+          )
+        )
+      ),
+
+        debugShowCheckedModeBanner: false,
+        home: SplashScreen());
   }
 }
 
