@@ -67,8 +67,9 @@ class _HomeScreenState extends State<HomeScreen> {
             events.add(eventModel);
           }
 
+
           return SingleChildScrollView(
-            child: ListView.builder(
+            child: events.isEmpty? SizedBox(): ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemCount: events.length,

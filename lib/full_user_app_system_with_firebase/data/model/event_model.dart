@@ -20,9 +20,9 @@ class EventModel {
   }) {
     return EventModel(
       id: id,
-      title: firebaseData[AllKey.eventTitle],
-      details: firebaseData[AllKey.eventDetails],
-      dateTime: firebaseData[AllKey.eventTime],
+      title: firebaseData[AllKey.eventTitle]??'',
+      details: firebaseData[AllKey.eventDetails]??'',
+      dateTime: firebaseData[AllKey.eventTime]??'',
     );
   }
 }

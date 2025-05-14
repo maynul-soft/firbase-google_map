@@ -100,7 +100,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
     } else {
       try {
         await userManagement.doc(email).set({AllKey.userDetailsKey:userInformation});
-        createAllFieldOnDatabaseForNewUser.set({});
+        createAllFieldOnDatabaseForNewUser.set({
+        AllKey.eventTitle: 'Welcome',
+        AllKey.eventDetails: 'Manage your event',
+        AllKey.eventTime: 'Time: initial Date: initial',
+        });
         clearAllTextField();
         if (!mounted) return;
         showPopUp(context, message: 'Registration Successfully');
